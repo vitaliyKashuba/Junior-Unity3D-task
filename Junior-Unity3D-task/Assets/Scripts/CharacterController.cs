@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterController : MonoBehaviour {
 
-	public float maxSpeed = 5f; 
+	public float maxSpeed = 2f; 
 	private Animator animator;
 
 	void Start () 
