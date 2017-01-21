@@ -23,7 +23,6 @@ public class Enemy : MonoBehaviour {
 
 	protected void FixedUpdate()
 	{
-		Debug.Log ("enemy fix update");
 		if (moveHorizontal > 0 && !isFacingRight) 
 		{
 			Flip ();
@@ -36,7 +35,7 @@ public class Enemy : MonoBehaviour {
 
 	protected void Flip()
 	{
-		Debug.Log ("flip");
+		//Debug.Log ("flip");
 		isFacingRight = !isFacingRight;
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;

@@ -12,4 +12,35 @@ public static class Randomizer
 		int r = (int)(Random.value * 100);
 		return r > 0 && r < chance;
 	}
+		
+	public static Direction getRandomDirection()
+	{
+		if (getBooleanRandom (50)) 
+		{
+			if (getBooleanRandom (50)) 
+			{
+				return Direction.NORTH;
+			} 
+			else 
+			{
+				return Direction.SOUTH;
+			}
+		} 
+		else 
+		{
+			if (getBooleanRandom (50)) 
+			{
+				return Direction.EAST;
+			} 
+			else 
+			{
+				return Direction.WEST;
+			}
+		}
+	}
+
+	public static int[] getRandomCoordinate(int maxX, int maxY)
+	{
+		return new int[] {(int)(Random.value * maxX), (int)(Random.value * maxY)};
+	}
 }

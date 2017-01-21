@@ -32,7 +32,9 @@ public class Zombie : Enemy
 				//TODO add seek and destroy logic
 				break;
 		}
+
 		GetComponent<Rigidbody2D>().velocity = new Vector2 (moveHorizontal * speed, moveVertical * speed);
+
 		if (moveHorizontal != 0 || moveVertical != 0) 
 		{
 			animator.SetBool ("isWalk", true);
@@ -44,7 +46,7 @@ public class Zombie : Enemy
 
 	void doWait()
 	{
-		Debug.Log ("doWait");
+		//Debug.Log ("doWait");
 		moveVertical = moveHorizontal = 0;
 	}
 
@@ -54,7 +56,7 @@ public class Zombie : Enemy
 		{
 			changeDirection ();
 		}
-		Debug.Log ("doWalk" + direction);
+		//Debug.Log ("doWalk" + direction);
 		//GetComponent<Rigidbody2D>().velocity = new Vector2 (moveHorizontal * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
 	}
 
@@ -84,16 +86,20 @@ public class Zombie : Enemy
 
 	void OnTriggerEnter2D(Collider2D c) 
 	{
-		Debug.Log ("trigger enter");
+		//Debug.Log ("trigger enter");
 		if (c.gameObject.CompareTag ("Player")) 
 		{
 			animator.SetBool ("isAttack", true);
 		}
+		/*if (c.gameObject.name.Equals ("PursuitRadius"))
+		{
+			state = EnemyState.PURSUIT;
+		}*/
 	}
 
 	void OnTriggerExit2D(Collider2D c)
 	{
-		Debug.Log ("trigger exit");
+		//Debug.Log ("trigger exit");
 		animator.SetBool ("isAttack", false);
 	}
 }

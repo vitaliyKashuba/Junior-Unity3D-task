@@ -5,13 +5,19 @@ using UnityEngine;
 public class MazeBuilderScript : MonoBehaviour 
 {
 	public Rigidbody2D wall;
+	public Rigidbody2D zombie;
 	public SpriteRenderer ground;
+
+	private IEnumerator coroutine;
+	bool timeToSpawnZombie = true;
+	int mazeSize;
 	float wallSize = 0.9f;
+	MazePoint[,] maze;
 
 	void Start () 
 	{
-		MazePoint[,] maze = SimpleMazeGenerator.getMaze ();
-		int mazeSize = maze.GetUpperBound(1); //TODO fix to be possible use non-square maze's
+		maze = SimpleMazeGenerator.getMaze ();
+		mazeSize = maze.GetUpperBound(1); //TODO fix to be possible use non-square maze's
 		mazeSize++; //upperBound returns not size, but last index
 		//Debug.Log(mazeSize);
 		for (int i = 0; i < mazeSize; i++) 
@@ -30,14 +36,30 @@ public class MazeBuilderScript : MonoBehaviour
 				}
 			}
 		}
-		//wall.position.Set (position.position.x + 1.0f, position.position.y + 1.0f, position.position.z);
-			//position.position.y = position.position.y + 2;
-			//Instantiate (wall, new Vector3(i*wallSize, 0, 0), Quaternion.identity);// as RigidbodyType2D;
-		//Instantiate (wall);// as RigidbodyType2D;
+			
+	}		
 
+	void Update () 
+	{
+		//spawnZombie ();
+		if (timeToSpawnZombie) 
+		{
+			coroutine = spawnZombie ();
+			StartCoroutine (coroutine);
+			timeToSpawnZombie = false;
+		}
 	}
 
-	void Update () {
-		
+	IEnumerator spawnZombie()
+	{
+		yield return new WaitForSeconds(1.0f);
+		int[] c = Randomizer.getRandomCoordinate (mazeSize, mazeSize);
+		while(!maze[c[0],c[1]].Equals(MazePoint.GROUND))
+		{
+			c = Randomizer.getRandomCoordinate (mazeSize, mazeSize);
+		}
+		Instantiate (zombie, new Vector3 (c[0] * wallSize, c[1] * wallSize, 0), Quaternion.identity);
+		timeToSpawnZombie = true;
+		Debug.Log ("spawn zombie " + c[0] + " " + c[1]);
 	}
 }

@@ -6,6 +6,7 @@ public class CharacterController : MonoBehaviour {
 
 	public float maxSpeed = 2f; 
 	private Animator animator;
+	bool isFacingRight = true;
 
 	void Start () 
 	{
@@ -22,17 +23,35 @@ public class CharacterController : MonoBehaviour {
 		float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
 
-		animator.SetFloat("Speed", Mathf.Abs(moveHorizontal+moveVertical));
+		//animator.SetFloat("Speed", Mathf.Abs(moveHorizontal+moveVertical));
+		if (moveHorizontal != 0 || moveVertical != 0) 
+		{
+			animator.SetBool ("isRun", true);
+		} else 
+		{
+			animator.SetBool ("isRun", false);
+		}
 
-		GetComponent<Rigidbody2D>().velocity = new Vector2 (moveHorizontal * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
-		GetComponent<Rigidbody2D>().velocity = new Vector2 (GetComponent<Rigidbody2D>().velocity.x, moveVertical * maxSpeed);
+		GetComponent<Rigidbody2D>().velocity = new Vector2 (moveHorizontal * maxSpeed, moveVertical * maxSpeed);
+		//GetComponent<Rigidbody2D>().velocity = new Vector2 (GetComponent<Rigidbody2D>().velocity.x, moveVertical * maxSpeed);
 
-		//если нажали клавишу для перемещения вправо, а персонаж направлен влево
-		/*if(move > 0 && !isFacingRight)
-			//отражаем персонажа вправо
-			Flip();
-		//обратная ситуация. отражаем персонажа влево
-		else if (move < 0 && isFacingRight)
-			Flip();*/
-	}		
+		if (moveHorizontal > 0 && !isFacingRight) 
+		{
+			Flip ();
+		} 
+		else if (moveHorizontal < 0 && isFacingRight) 
+		{
+			Flip ();
+		}
+
+	}	
+		
+	private void Flip()
+	{
+		isFacingRight = !isFacingRight;
+		Vector3 theScale = transform.localScale;
+		theScale.x *= -1;
+		transform.localScale = theScale;
+	}
+
 }
