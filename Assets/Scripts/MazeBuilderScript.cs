@@ -7,19 +7,20 @@ public class MazeBuilderScript : MonoBehaviour
 	public GameObject wall;
 	//public GameObject zombie;
 	public GameObject ground;
-	//public GameObject coin;
-	//public GameObject mummy;
+    //public GameObject coin;
+    //public GameObject mummy;
+    public GameObject player;
 
 	private IEnumerator coroutine;
-	bool timeToSpawnZombie = true, timeToSpawnCoin = true, timeToSpawnMummy = true;
+	//bool timeToSpawnZombie = true, timeToSpawnCoin = true, timeToSpawnMummy = true;
 	int mazeSize;
-	float wallSize = 0.9f;
+	const float WALL_SIZE = 0.9f;
 	MazePoint[,] maze;
 
 	void Start () 
 	{
 		maze = SimpleMazeGenerator.getMaze ();
-		mazeSize = maze.GetUpperBound(1); //TODO fix to be possible use non-square maze's
+		mazeSize = maze.GetUpperBound(1);
 		mazeSize++; //upperBound returns not size, but last index
 		//Debug.Log(mazeSize);
 		for (int i = 0; i < mazeSize; i++) 
@@ -28,20 +29,21 @@ public class MazeBuilderScript : MonoBehaviour
 			{
 				if (maze [i, j].Equals (MazePoint.WALL))
 				{
-					Instantiate (wall, new Vector3 (i * wallSize, j * wallSize, 0), Quaternion.identity);
+					Instantiate (wall, new Vector3 (i * WALL_SIZE, j * WALL_SIZE, 0), Quaternion.identity);
 				} else 
 				{
 					if (maze [i, j].Equals (MazePoint.GROUND)) 
 					{
-						Instantiate (ground, new Vector3 (i * wallSize, j * wallSize, 0), Quaternion.identity);
+						Instantiate (ground, new Vector3 (i * WALL_SIZE, j * WALL_SIZE, 0), Quaternion.identity);
 					}
 				}
 			}
 		}
-			
-	}		
 
-	/*void Update ()  //still not good, but better then before
+        spawn(player, -1);
+	}
+
+    /*void Update ()  //still not good, but better then before
 	{
 		if (timeToSpawnZombie) //no need to refactor, because will be rewritten after spawn conditions change
 		{
@@ -62,34 +64,28 @@ public class MazeBuilderScript : MonoBehaviour
 			timeToSpawnMummy = false;
 		}
 
-	}		
+	}	
 
-	IEnumerator spawn(GameObject spawner, float delay) //TODO add spawn-near-player-check
-	{
-		yield return new WaitForSeconds(delay);
-		int[] c = getRandomGroundPoint ();
-		Instantiate (spawner, new Vector3 (c[0] * wallSize, c[1] * wallSize, 0), Quaternion.identity);
-		switch (spawner.name) //TODO do something with this shit
-		{
-		case "Coin":
-			timeToSpawnCoin = true;
-			break;
-		case "Zombie":
-			timeToSpawnZombie = true;
-			break;
-		case "Mummy":
-			timeToSpawnMummy = true;
-			break;
-		}
+    */
 
-		Debug.Log ("spawn" + spawner.ToString() + " " + spawner.name + " " + spawner.tag);
-	}
+        /// <summary>
+        /// spawn object
+        /// </summary>
+        /// <param name="spawner">what to spawn</param>
+        /// <param name="layer">visibility layer, less = closer </param>
+    void spawn(GameObject spawner, int layer) 
+    {
+        int[] c = getRandomGroundPoint();
+        Instantiate(spawner, new Vector3(c[0] * WALL_SIZE, c[1] * WALL_SIZE, layer), Quaternion.identity);
 
-	/// <summary>
-	/// Gets the random ground point.
-	/// used to avoid spawning at walls
-	/// </summary>
-	int[] getRandomGroundPoint()
+        Debug.Log("spawn" + spawner.ToString() + " " + spawner.name + " " + spawner.tag);
+    }
+
+    /// <summary>
+    /// Gets the random ground point.
+    /// used to avoid spawning at walls
+    /// </summary>
+    int[] getRandomGroundPoint()
 	{
 		int[] c;
 		do 
@@ -98,5 +94,5 @@ public class MazeBuilderScript : MonoBehaviour
 		} 
 		while (!maze [c [0], c [1]].Equals (MazePoint.GROUND));
 		return c;
-	}*/
+	}
 }

@@ -2,13 +2,16 @@
 
 public static class SimpleMazeGenerator 
 {
-	private static int mazeSize;
+	private const int MAZE_SIZE = 25;
 	private static MazePoint[,] maze;
 
+    /// <summary>
+    /// generate and return maze map as matrix
+    /// </summary>
+    /// <returns></returns>
 	public static MazePoint[,] getMaze() //TODO add deadzones check
 	{
-		mazeSize = 25;
-		maze = new MazePoint[mazeSize, mazeSize];
+		maze = new MazePoint[MAZE_SIZE, MAZE_SIZE];
 		generateWalls (maze);
 		generateBorders (maze);
 		return maze;
@@ -16,9 +19,9 @@ public static class SimpleMazeGenerator
 
 	private static void generateWalls(MazePoint[,] maze)
 	{
-		for (int i = 0; i < mazeSize; i++)
+		for (int i = 0; i < MAZE_SIZE; i++)
 		{
-			for (int j = 0; j < mazeSize; j++) 
+			for (int j = 0; j < MAZE_SIZE; j++) 
 			{
 				if (i % 2 == 0 && j % 2 == 0) 
 				{
@@ -41,11 +44,11 @@ public static class SimpleMazeGenerator
 
 	private static void generateBorders(MazePoint[,] maze)
 	{
-		for (int i=0; i<mazeSize; i++) //add borders
+		for (int i=0; i<MAZE_SIZE; i++) //add borders
 		{
-			for(int j=0; j<mazeSize; j++)
+			for(int j=0; j<MAZE_SIZE; j++)
 			{
-				if (i==0 || j==0 || i==mazeSize-1 || j==mazeSize-1)
+				if (i==0 || j==0 || i==MAZE_SIZE-1 || j==MAZE_SIZE-1)
 				{
 					maze [i, j] = MazePoint.WALL;
 				}
