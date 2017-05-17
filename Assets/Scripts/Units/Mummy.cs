@@ -8,7 +8,7 @@ public class Mummy : Enemy
 	{
 		animator = GetComponent<Animator>(); // can't be moved to base (super) constructor ?
 		speed = (basicSpeed * 2) + speedIncreaser;
-		state = EnemyState.PURSUIT;
+		//state = EnemyState.PURSUIT;
 	}
 		
 }

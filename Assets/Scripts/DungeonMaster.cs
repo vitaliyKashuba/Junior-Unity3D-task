@@ -11,7 +11,7 @@ public class DungeonMaster : MonoBehaviour
 	public GameObject zombie;
 	public GameObject ground;
     public GameObject coin;
-    //public GameObject mummy;
+    public GameObject mummy;
     public GameObject player;
 
     private bool timeToSpawnCoin = true;
@@ -104,7 +104,7 @@ public class DungeonMaster : MonoBehaviour
                     spawn(zombie);
                     break;
                 case 10:
-                    //spawn mummy
+                    spawn(mummy);
                     break;
                 case 20:
                     //pursuit

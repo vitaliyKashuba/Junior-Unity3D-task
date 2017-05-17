@@ -45,7 +45,7 @@ public class Enemy : Unit {
 
 	protected void doWalk()
 	{
-		if (Randomizer.getBooleanRandom (10)) 
+		if (Randomizer.getBooleanRandom (5)) 
 		{
 			changeDirection ();
 		}
@@ -58,7 +58,7 @@ public class Enemy : Unit {
 		switch (direction) 
 		{
 		case Direction.NORTH:
-			moveVertical=1; //why 2?
+			moveVertical=1;
 			break;
 		case Direction.SOUTH:
 			moveVertical=-1;
