@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 /// <summary>
 /// generate maze, spawn player, enemies, coins
@@ -20,9 +23,12 @@ public class DungeonMaster : MonoBehaviour
 	const float WALL_SIZE = 0.9f;
     private const int COIN_SPAWN_DELAY = 1; //TODO 5
 	MazePoint[,] maze;
+    private Stopwatch time;
 
 	void Start () 
 	{
+        time = new Stopwatch();
+        time.Start();
         Debug.Log(Static.getName());
 		maze = SimpleMazeGenerator.getMaze ();
 		mazeSize = maze.GetUpperBound(1);
@@ -51,6 +57,14 @@ public class DungeonMaster : MonoBehaviour
 
     void Update () 
 	{
+	    if (Input.GetKeyDown(KeyCode.Escape))
+	    {
+	        //write results
+            time.Stop();
+            Debug.Log("exit " + time.Elapsed + " " + DateTime.Now);
+            XMLUtil.writeData(new Scoresheet(Static.getName(), Static.getScore(), time.Elapsed, DateTime.Now, ExitStatus.ESCAPED));
+            Application.Quit();
+	    }
 	    if (coinsCount < 10 && timeToSpawnCoin)
 	    {
 	        IEnumerator coroutine = spawnCoin();
