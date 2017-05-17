@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraScript : MonoBehaviour {
+public class CameraScript : MonoBehaviour
+{
 
 	private float dampTime = 0.15f;
 	public Transform target;
@@ -14,7 +15,6 @@ public class CameraScript : MonoBehaviour {
         System.Threading.Thread.Sleep(1000);    // TODO: !! add isSpawnedCheck instead of waiting
         target = GameObject.FindGameObjectWithTag("Player").transform;
 	}
-	
 
 	void Update () //TODO refactor it
 	{

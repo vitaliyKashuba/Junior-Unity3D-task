@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour {
+public class Unit : MonoBehaviour
+{
 
 	protected bool isFacingRight;
 	protected float moveHorizontal, moveVertical = 0;

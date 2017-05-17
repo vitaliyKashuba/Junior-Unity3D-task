@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeBuilderScript : MonoBehaviour 
+/// <summary>
+/// generate maze, spawn player, enemies, coins
+/// </summary>
+public class DungeonMaster : MonoBehaviour 
 {
 	public GameObject wall;
 	//public GameObject zombie;
 	public GameObject ground;
-    //public GameObject coin;
+    public GameObject coin;
     //public GameObject mummy;
     public GameObject player;
 
 	private IEnumerator coroutine;
 	//bool timeToSpawnZombie = true, timeToSpawnCoin = true, timeToSpawnMummy = true;
+    private static int coinsCount = 0;
 	int mazeSize;
 	const float WALL_SIZE = 0.9f;
 	MazePoint[,] maze;
@@ -42,6 +46,7 @@ public class MazeBuilderScript : MonoBehaviour
 		}
 
         spawn(player, -1);
+        spawnCoin();
 	}
 
     /*void Update ()  //still not good, but better then before
@@ -69,17 +74,37 @@ public class MazeBuilderScript : MonoBehaviour
 
     */
 
-        /// <summary>
-        /// spawn object
-        /// </summary>
-        /// <param name="spawner">what to spawn</param>
-        /// <param name="layer">visibility layer, less = closer </param>
-    void spawn(GameObject spawner, int layer) 
+    /// <summary>
+    /// spawn object
+    /// </summary>
+    /// <param name="spawner">what to spawn</param>
+    /// <param name="layer">visibility layer, less = closer </param>
+    void spawn(GameObject spawner, float layer) 
     {
         int[] c = getRandomGroundPoint();
         Instantiate(spawner, new Vector3(c[0] * WALL_SIZE, c[1] * WALL_SIZE, layer), Quaternion.identity);
 
         Debug.Log("spawn" + spawner.ToString() + " " + spawner.name + " " + spawner.tag);
+    }
+
+    /// <summary>
+    /// spawn object, use layer from prefab
+    /// </summary>
+    void spawn(GameObject spawner)
+    {
+        spawn(spawner, spawner.transform.position.z);
+    }
+
+    void spawnCoin()
+    {
+        spawn(coin);
+        coinsCount++;
+    }
+
+    public static void grabCoin()
+    {
+        coinsCount--;
+        Static.increaseScore();
     }
 
     /// <summary>
@@ -96,4 +121,9 @@ public class MazeBuilderScript : MonoBehaviour
 		while (!maze [c [0], c [1]].Equals (MazePoint.GROUND));
 		return c;
 	}
+
+    void OnGUI()
+    {
+        GUI.Box(new Rect(0, 0, 100, 25), "Score: " + Static.getScore());
+    }
 }

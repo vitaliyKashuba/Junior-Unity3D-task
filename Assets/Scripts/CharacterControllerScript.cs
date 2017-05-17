@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CharacterControllerScript : Unit {
 
-	int score=0;
-
 	void Start () 
 	{
 		animator = GetComponent<Animator>();
@@ -27,15 +25,10 @@ public class CharacterControllerScript : Unit {
 	{
 		if (c.gameObject.CompareTag ("Coin")) 
 		{
-			score++;
+			DungeonMaster.grabCoin();
 			c.gameObject.SetActive(false);
 			//Destroy (c.gameObject);
 		}
-	}
-
-	void OnGUI()
-	{
-		GUI.Box (new Rect (0, 0, 100, 25), "Score: " + score);
 	}
 
 }

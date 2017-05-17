@@ -2,8 +2,9 @@
 
 public static class SimpleMazeGenerator 
 {
-	private const int MAZE_SIZE = 25;
+	private const int MAZE_SIZE = 15;
 	private static MazePoint[,] maze;
+    private const int CHANCE_OF_WALL = 25; // 0 - no walls, 100 - no ways
 
     /// <summary>
     /// generate and return maze map as matrix
@@ -12,12 +13,12 @@ public static class SimpleMazeGenerator
 	public static MazePoint[,] getMaze() //TODO add deadzones check
 	{
 		maze = new MazePoint[MAZE_SIZE, MAZE_SIZE];
-		generateWalls (maze);
-		generateBorders (maze);
+		generateWalls ();
+		generateBorders ();
 		return maze;
 	}
 
-	private static void generateWalls(MazePoint[,] maze)
+	private static void generateWalls()
 	{
 		for (int i = 0; i < MAZE_SIZE; i++)
 		{
@@ -33,7 +34,7 @@ public static class SimpleMazeGenerator
 
 				if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0))
 				{
-					if (Randomizer.getBooleanRandom(25)) 
+					if (Randomizer.getBooleanRandom(CHANCE_OF_WALL)) 
 					{
 						maze [i, j] = MazePoint.WALL;
 					}
@@ -42,7 +43,7 @@ public static class SimpleMazeGenerator
 		}	
 	}
 
-	private static void generateBorders(MazePoint[,] maze)
+	private static void generateBorders()
 	{
 		for (int i=0; i<MAZE_SIZE; i++) //add borders
 		{
