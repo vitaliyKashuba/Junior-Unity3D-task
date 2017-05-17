@@ -25,7 +25,7 @@ public class CharacterControllerScript : Unit {
 	{
 		if (c.gameObject.CompareTag ("Coin")) 
 		{
-			DungeonMaster.grabCoin();
+			GameObject.Find("DungeonMaster").SendMessage("grabCoin"); // DungeonMaster.grabCoin() but non-static
 			c.gameObject.SetActive(false);
 			//Destroy (c.gameObject);
 		}

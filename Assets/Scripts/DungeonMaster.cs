@@ -8,17 +8,17 @@ using UnityEngine;
 public class DungeonMaster : MonoBehaviour 
 {
 	public GameObject wall;
-	//public GameObject zombie;
+	public GameObject zombie;
 	public GameObject ground;
     public GameObject coin;
     //public GameObject mummy;
     public GameObject player;
 
-	private IEnumerator coroutine;
-	//bool timeToSpawnZombie = true, timeToSpawnCoin = true, timeToSpawnMummy = true;
+    private bool timeToSpawnCoin = true;
     private static int coinsCount = 0;
 	int mazeSize;
 	const float WALL_SIZE = 0.9f;
+    private const int COIN_SPAWN_DELAY = 1; //TODO 5
 	MazePoint[,] maze;
 
 	void Start () 
@@ -46,33 +46,18 @@ public class DungeonMaster : MonoBehaviour
 		}
 
         spawn(player, -1);
-        spawnCoin();
+        spawn(zombie);
 	}
 
-    /*void Update ()  //still not good, but better then before
+    void Update () 
 	{
-		if (timeToSpawnZombie) //no need to refactor, because will be rewritten after spawn conditions change
-		{
-			coroutine = spawn (zombie, 5.0f);
-			StartCoroutine (coroutine);
-			timeToSpawnZombie = false;
-		}
-		if (timeToSpawnCoin) 
-		{
-			coroutine = spawn (coin, 2.0f);
-			StartCoroutine (coroutine);
-			timeToSpawnCoin = false;
-		}
-		if (timeToSpawnMummy) 
-		{
-			coroutine = spawn (mummy, 10.0f);
-			StartCoroutine (coroutine);
-			timeToSpawnMummy = false;
-		}
-
+	    if (coinsCount < 10 && timeToSpawnCoin)
+	    {
+	        IEnumerator coroutine = spawnCoin();
+	        StartCoroutine(coroutine);
+	        timeToSpawnCoin = false;
+	    }
 	}	
-
-    */
 
     /// <summary>
     /// spawn object
@@ -95,16 +80,39 @@ public class DungeonMaster : MonoBehaviour
         spawn(spawner, spawner.transform.position.z);
     }
 
-    void spawnCoin()
+    IEnumerator spawnCoin()
     {
+        yield return new WaitForSeconds(COIN_SPAWN_DELAY);
         spawn(coin);
         coinsCount++;
+        timeToSpawnCoin = true;
     }
 
-    public static void grabCoin()
+    public void grabCoin()
     {
+        int score = Static.getScore();
         coinsCount--;
         Static.increaseScore();
+        if (score > 20)
+        {
+            //increase speed
+        } else
+        {
+            switch (Static.getScore())  //TODO spawn logic here
+            {
+                case 5:
+                    spawn(zombie);
+                    break;
+                case 10:
+                    //spawn mummy
+                    break;
+                case 20:
+                    //pursuit
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /// <summary>
