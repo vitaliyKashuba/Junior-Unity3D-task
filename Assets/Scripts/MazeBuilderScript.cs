@@ -19,6 +19,7 @@ public class MazeBuilderScript : MonoBehaviour
 
 	void Start () 
 	{
+        Debug.Log(Static.getName());
 		maze = SimpleMazeGenerator.getMaze ();
 		mazeSize = maze.GetUpperBound(1);
 		mazeSize++; //upperBound returns not size, but last index
