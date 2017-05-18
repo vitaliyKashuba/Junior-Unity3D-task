@@ -1,48 +1,42 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+[Serializable]
 public class Scoresheet
 {
-    private String name;// { get; } //TODO: fix getters
-    private int score;// { get; }
-    private TimeSpan time;
-    private DateTime date;
-    private ExitStatus exitStatus;
-
-    public Scoresheet(String name, int score, TimeSpan time, DateTime date, ExitStatus exitStatus)
+    [Serializable]
+    public class Node
     {
-        this.name = name;
-        this.score = score;
-        this.time = time;
-        this.date = date;
-        this.exitStatus = exitStatus;
+        public String name { get; set; } //TODO: fix getters
+        public int score { get; set; }
+        public String time { get; set; }    // TimeSpan cannot be serialized
+        public DateTime date { get; set; }
+        public ExitStatus exitStatus { get; set; }
+
+        public Node(String name, int score, TimeSpan time, DateTime date, ExitStatus exitStatus)
+        {
+            this.name = name;
+            this.score = score;
+            this.time = time.ToString();
+            this.date = date;
+            this.exitStatus = exitStatus;
+        }
+
+        public Node() { }
     }
 
-    public String getName()
+    public ArrayList nodes;
+
+    public Scoresheet()
     {
-        return name;
+        nodes = new ArrayList();
     }
 
-    public int getScore()
+    public void addGame(Node game)
     {
-        return score;
+        nodes.Add(game);
     }
-
-    public TimeSpan getTime()
-    {
-        return time;
-    }
-
-    public DateTime getDate()
-    {
-        return date;
-    }
-
-    public ExitStatus getExitStatus()
-    {
-        return exitStatus;
-    }
-
 }

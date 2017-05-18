@@ -3,52 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class XMLUtil
 {
     private const String FILENAME = "Highscores.xml";
+    static Type[] extraTypes = { typeof(Scoresheet.Node) };
+    static XmlSerializer formatter = new XmlSerializer(typeof(Scoresheet), extraTypes);
 
     public static void writeData(Scoresheet scoresheet) //TODO: replace with serialization?
     {
-        if (!File.Exists(FILENAME))
+        //Type[] extraTypes = { typeof(Scoresheet.Node) };
+        //XmlSerializer formatter = new XmlSerializer(typeof(Scoresheet), extraTypes);
+        using (FileStream fs = new FileStream(FILENAME, FileMode.OpenOrCreate))
         {
-            createFile();
+            formatter.Serialize(fs, scoresheet);
         }
-
-        XmlDocument doc = new XmlDocument();
-        doc.Load(FILENAME);
-
-        XmlElement gameNode = doc.CreateElement("game");
-        doc.DocumentElement.AppendChild(gameNode);
-
-        XmlElement name = doc.CreateElement("name");    // TODO: simplify if possible
-        XmlElement score = doc.CreateElement("score");
-        XmlElement time = doc.CreateElement("time");
-        XmlElement date = doc.CreateElement("date");
-        XmlElement status = doc.CreateElement("status");
-
-        name.InnerText = scoresheet.getName();
-        score.InnerText = scoresheet.getScore().ToString();
-        time.InnerText = scoresheet.getTime().ToString();
-        date.InnerText = scoresheet.getDate().ToString();
-        status.InnerText = scoresheet.getExitStatus().ToString();
-
-        gameNode.AppendChild(name);
-        gameNode.AppendChild(score);
-        gameNode.AppendChild(time);
-        gameNode.AppendChild(date);
-        gameNode.AppendChild(status);
-
-        doc.Save(FILENAME);
     }
 
-    public static void createFile()
+    public static Scoresheet readData()
     {
-        XmlTextWriter textWritter = new XmlTextWriter(FILENAME, null);
-        textWritter.WriteStartDocument();
-        textWritter.WriteStartElement("root");
-        textWritter.WriteEndElement();
-        textWritter.Close();
+        Scoresheet scoresheet;
+        Debug.Log("read data");
+        using (FileStream fs = new FileStream(FILENAME, FileMode.OpenOrCreate))
+        {
+            scoresheet = (Scoresheet)formatter.Deserialize(fs);
+            Debug.Log(scoresheet.ToString());
+        }
+        return scoresheet;
     }
 }

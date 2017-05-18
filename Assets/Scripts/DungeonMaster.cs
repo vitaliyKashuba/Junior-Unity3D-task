@@ -62,10 +62,16 @@ public class DungeonMaster : MonoBehaviour
 	    {
             time.Stop();
             Debug.Log("exit " + time.Elapsed + " " + DateTime.Now);
+            Scoresheet.Node game = new Scoresheet.Node(Static.getName(), Static.getScore(), time.Elapsed, DateTime.Now,
+                ExitStatus.ESCAPED);
+//	        Scoresheet.Node game2 = new Scoresheet.Node("111", 100, time.Elapsed, DateTime.Now,
+//	            ExitStatus.KILLED_BY_MUMMY);
+//            Scoresheet scoresheet = new Scoresheet();
+            Static.getScoresheet().addGame(game);
+            //scoresheet.addGame(game2);
 	        try
 	        {
-	            XMLUtil.writeData(new Scoresheet(Static.getName(), Static.getScore(), time.Elapsed, DateTime.Now,
-	                ExitStatus.ESCAPED));
+	            XMLUtil.writeData(Static.getScoresheet());
 	        }
 	        catch (IOException e)
 	        {

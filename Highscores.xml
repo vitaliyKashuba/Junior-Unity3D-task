@@ -1,18 +1,33 @@
-<?xml version="1.0"?>
-<root>
-  <game>
-    <name>
-    </name>
-    <score>1</score>
-    <time>00:00:08.5026879</time>
-    <date>5/17/2017 9:38:03 PM</date>
-    <status>ESCAPED</status>
-  </game>
-  <game>
-    <name>Player1</name>
-    <score>2</score>
-    <time>00:00:06.2947558</time>
-    <date>5/17/2017 9:53:58 PM</date>
-    <status>ESCAPED</status>
-  </game>
-</root>
+<?xml version="1.0" encoding="windows-1251"?>
+<Scoresheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <nodes>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>0</score>
+      <time>00:00:02.4443639</time>
+      <date>2017-05-18T12:39:51.685+03:00</date>
+      <exitStatus>ESCAPED</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>111</name>
+      <score>100</score>
+      <time>00:00:02.4443639</time>
+      <date>2017-05-18T12:39:51.685+03:00</date>
+      <exitStatus>KILLED_BY_MUMMY</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>1</score>
+      <time>00:00:05.0348114</time>
+      <date>2017-05-18T12:50:06.306+03:00</date>
+      <exitStatus>ESCAPED</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>2312312</name>
+      <score>1</score>
+      <time>00:00:07.2471172</time>
+      <date>2017-05-18T12:52:43.991+03:00</date>
+      <exitStatus>ESCAPED</exitStatus>
+    </anyType>
+  </nodes>
+</Scoresheet>

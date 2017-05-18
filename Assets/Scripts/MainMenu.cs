@@ -17,9 +17,10 @@ public class MainMenu : MonoBehaviour
         {
             Static.setName(playerName);
             SceneManager.LoadScene("maze");
+            Static.setScoresheet(XMLUtil.readData());
         }
 
-        name = GUI.TextField(new Rect(B_POSITION_X, B_POSITION_Y, BUTTON_LENGTH, BUTTON_HEIGTH), playerName);
+        playerName = GUI.TextField(new Rect(B_POSITION_X, B_POSITION_Y, BUTTON_LENGTH, BUTTON_HEIGTH), playerName);
 
         if (GUI.Button(new Rect(B_POSITION_X, B_POSITION_Y + 50, BUTTON_LENGTH, BUTTON_HEIGTH), "Scores"))
         {
