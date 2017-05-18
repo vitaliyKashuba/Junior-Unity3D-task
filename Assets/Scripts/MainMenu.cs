@@ -17,7 +17,7 @@ public class MainMenu : MonoBehaviour
         Static.setScoresheet(XMLUtil.readData());
     }
 
-    void OnGUI()
+    void OnGUI()    //TODO: add better GUI
     {
         if (GUI.Button(new Rect(B_POSITION_X, B_POSITION_Y - 50, BUTTON_LENGTH, BUTTON_HEIGTH), "New Game"))
         {
@@ -32,7 +32,7 @@ public class MainMenu : MonoBehaviour
         int p = 0;
         foreach (Scoresheet.Node node in Static.getScoresheet().nodes)
         {
-            GUI.TextField(new Rect(0, p, 450, 20), node.ToString());
+            GUI.TextField(new Rect(0, p, 480, 20), node.ToString());
             p = p + 20;
         }
         GUI.EndScrollView();

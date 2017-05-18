@@ -2,7 +2,7 @@
 
 public static class SimpleMazeGenerator 
 {
-	private const int MAZE_SIZE = 15;
+	public const int MAZE_SIZE = 15;
 	private static MazePoint[,] maze;
     private const int CHANCE_OF_WALL = 25; // 0 - no walls, 100 - no ways
 

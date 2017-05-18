@@ -22,9 +22,9 @@ public class DungeonMaster : MonoBehaviour
     private bool timeToSpawnCoin = true, alive = true;
     private static int coinsCount = 0, score = 0;
     int mazeSize;
-	const float WALL_SIZE = 0.9f;
+	public const float WALL_SIZE = 0.9f;
     private const int COIN_SPAWN_DELAY = 1; //TODO 5
-	MazePoint[,] maze;
+	static MazePoint[,] maze;
     private Stopwatch time;
 
     void resetVariables()
@@ -137,7 +137,10 @@ public class DungeonMaster : MonoBehaviour
                     spawn(mummy);
                     break;
                 case 20:
-                    //pursuit
+                    foreach (GameObject o in GameObject.FindGameObjectsWithTag("Enemy"))
+                    {
+                        o.SendMessage("startPursuit");
+                    }
                     break;
                 default:
                     break;
@@ -192,5 +195,10 @@ public class DungeonMaster : MonoBehaviour
                 SceneManager.LoadScene("menu");
             }
         }
+    }
+
+    public static MazePoint[,] getMaze()
+    {
+        return maze;
     }
 }

@@ -4,6 +4,20 @@
     <anyType xsi:type="Node">
       <name>Player1</name>
       <score>0</score>
+      <time>00:00:07.8237259</time>
+      <date>2017-05-18T20:36:10.0954+03:00</date>
+      <exitStatus>KILLED_BY_ZOMBIE</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>0</score>
+      <time>00:00:31.3602386</time>
+      <date>2017-05-18T19:11:31.8884+03:00</date>
+      <exitStatus>KILLED_BY_MUMMY</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>0</score>
       <time>00:00:03.2604448</time>
       <date>2017-05-18T18:24:46.3924+03:00</date>
       <exitStatus>KILLED_BY_ZOMBIE</exitStatus>
