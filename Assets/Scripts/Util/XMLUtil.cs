@@ -9,7 +9,7 @@ public class XMLUtil
 {
     private const String FILENAME = "Highscores.xml";
 
-    public static void writeData(Scoresheet scoresheet)
+    public static void writeData(Scoresheet scoresheet) //TODO: replace with serialization?
     {
         if (!File.Exists(FILENAME))
         {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -59,10 +60,19 @@ public class DungeonMaster : MonoBehaviour
 	{
 	    if (Input.GetKeyDown(KeyCode.Escape))
 	    {
-	        //write results
             time.Stop();
             Debug.Log("exit " + time.Elapsed + " " + DateTime.Now);
-            XMLUtil.writeData(new Scoresheet(Static.getName(), Static.getScore(), time.Elapsed, DateTime.Now, ExitStatus.ESCAPED));
+	        try
+	        {
+	            XMLUtil.writeData(new Scoresheet(Static.getName(), Static.getScore(), time.Elapsed, DateTime.Now,
+	                ExitStatus.ESCAPED));
+	        }
+	        catch (IOException e)
+	        {
+	            Debug.Log("Error during saving results, resuls will not be saved");
+                Debug.Log(e.Message);
+	        }
+           
             Application.Quit();
 	    }
 	    if (coinsCount < 10 && timeToSpawnCoin)

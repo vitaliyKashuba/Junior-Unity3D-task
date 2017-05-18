@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    string playerName = "Player1";
+    string playerName = Static.getName();
     const int BUTTON_LENGTH = 100;
     const int BUTTON_HEIGTH = 25;
     readonly int B_POSITION_X = Screen.width / 2;
