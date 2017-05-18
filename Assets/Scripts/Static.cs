@@ -2,15 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Security.Policy;
 using UnityEditorInternal;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
+/// <summary>
+/// used to keep player name and stats between scenes
+/// </summary>
 public static class Static
 {
     private const String DEFAULT_NAME = "Player1";
     private static String playerName;// { get; set; } TODO: find out why error here
-    private static int score = 0;
     private static Scoresheet scoresheet;
 
     public static void setName(String name)
@@ -23,16 +27,6 @@ public static class Static
         return playerName ?? DEFAULT_NAME; // nlv(playerName, DEFAULT_NAME)
     }
 
-    public static int getScore()
-    {
-        return score;
-    }
-
-    public static void increaseScore()
-    {
-        score++;
-    }
-
     public static Scoresheet getScoresheet()
     {
         return scoresheet;
@@ -43,4 +37,17 @@ public static class Static
         scoresheet = sheet;
     }
 
+    public static void appendResult(Scoresheet.Node node)
+    {
+        scoresheet.addGame(node);
+        try
+        {
+            XMLUtil.writeData(scoresheet);
+        }
+        catch (IOException e)
+        {
+            Debug.Log("Error during saving results, resuls will not be saved");
+            Debug.Log(e.Message);
+        }
+    }
 }

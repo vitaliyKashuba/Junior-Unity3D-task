@@ -2,6 +2,62 @@
 <Scoresheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <nodes>
     <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>0</score>
+      <time>00:00:03.2604448</time>
+      <date>2017-05-18T18:24:46.3924+03:00</date>
+      <exitStatus>KILLED_BY_ZOMBIE</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>0</score>
+      <time>00:00:04.6463737</time>
+      <date>2017-05-18T17:30:24.4204+03:00</date>
+      <exitStatus>ESCAPED</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>1</score>
+      <time>00:00:06.7790030</time>
+      <date>2017-05-18T17:30:17.0374+03:00</date>
+      <exitStatus>KILLED_BY_ZOMBIE</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>0</score>
+      <time>00:00:27.5804848</time>
+      <date>2017-05-18T17:24:41.7194+03:00</date>
+      <exitStatus>KILLED_BY_MUMMY</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>1</score>
+      <time>00:00:03.4935970</time>
+      <date>2017-05-18T17:24:11.7634+03:00</date>
+      <exitStatus>KILLED_BY_ZOMBIE</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>0</score>
+      <time>00:00:03.9087043</time>
+      <date>2017-05-18T17:02:41.6954+03:00</date>
+      <exitStatus>ESCAPED</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>3</score>
+      <time>00:00:16.0225512</time>
+      <date>2017-05-18T16:40:54.9494+03:00</date>
+      <exitStatus>ESCAPED</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
+      <name>Player1</name>
+      <score>1</score>
+      <time>00:00:03.8757376</time>
+      <date>2017-05-18T16:18:09.4424+03:00</date>
+      <exitStatus>ESCAPED</exitStatus>
+    </anyType>
+    <anyType xsi:type="Node">
       <name>111</name>
       <score>0</score>
       <time>00:00:05.6889351</time>

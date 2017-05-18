@@ -109,18 +109,21 @@ public class Enemy : Unit {
 
 	void OnTriggerEnter2D(Collider2D c) 
 	{
-		//Debug.Log ("trigger enter");
 		if (c.gameObject.CompareTag ("Player")) 
 		{
-			animator.SetBool ("isAttack", true);
-		}
+            //animator.SetBool ("isAttack", true);
+		    GameObject.Find("DungeonMaster").SendMessage("gameOver", this.GetType());
+        }
 	}
 
-	void OnTriggerExit2D(Collider2D c)
-	{
-		//Debug.Log ("trigger exit");
-		animator.SetBool ("isAttack", false);
-	}
+//	void OnTriggerExit2D(Collider2D c)
+//	{
+//	    if (c.gameObject.CompareTag("Player"))
+//	    {
+//	        animator.SetBool("isAttack", false);
+//	        Time.timeScale = 0;
+//        }  
+//    }
 
 	//findPlayer(), goToPlayer..
 }

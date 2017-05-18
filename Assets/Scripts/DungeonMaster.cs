@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 
 /// <summary>
@@ -18,23 +19,30 @@ public class DungeonMaster : MonoBehaviour
     public GameObject mummy;
     public GameObject player;
 
-    private bool timeToSpawnCoin = true;
-    private static int coinsCount = 0;
-	int mazeSize;
+    private bool timeToSpawnCoin = true, alive = true;
+    private static int coinsCount = 0, score = 0;
+    int mazeSize;
 	const float WALL_SIZE = 0.9f;
     private const int COIN_SPAWN_DELAY = 1; //TODO 5
 	MazePoint[,] maze;
     private Stopwatch time;
 
-	void Start () 
-	{
+    void resetVariables()
+    {
+        coinsCount = 0;
+        score = 0;
+        Time.timeScale = 1;
         time = new Stopwatch();
         time.Start();
-        //Debug.Log(Static.getName());
+    }
+
+	void Start ()
+	{
+        resetVariables();
+	    
 		maze = SimpleMazeGenerator.getMaze ();
 		mazeSize = maze.GetUpperBound(1);
 		mazeSize++; //upperBound returns not size, but last index
-		//Debug.Log(mazeSize);
 		for (int i = 0; i < mazeSize; i++) 
 		{
 			for (int j = 0; j < mazeSize; j++) 
@@ -61,26 +69,13 @@ public class DungeonMaster : MonoBehaviour
 	    if (Input.GetKeyDown(KeyCode.Escape))
 	    {
             time.Stop();
-            Debug.Log("exit " + time.Elapsed + " " + DateTime.Now);
-            Scoresheet.Node game = new Scoresheet.Node(Static.getName(), Static.getScore(), time.Elapsed, DateTime.Now,
+            Scoresheet.Node game = new Scoresheet.Node(Static.getName(), score, time.Elapsed, DateTime.Now,
                 ExitStatus.ESCAPED);
-//	        Scoresheet.Node game2 = new Scoresheet.Node("111", 100, time.Elapsed, DateTime.Now,
-//	            ExitStatus.KILLED_BY_MUMMY);
-//            Scoresheet scoresheet = new Scoresheet();
-            Static.getScoresheet().addGame(game);
-            //scoresheet.addGame(game2);
-	        try
-	        {
-	            XMLUtil.writeData(Static.getScoresheet());
-	        }
-	        catch (IOException e)
-	        {
-	            Debug.Log("Error during saving results, resuls will not be saved");
-                Debug.Log(e.Message);
-	        }
+            Static.appendResult(game);
            
             Application.Quit();
 	    }
+
 	    if (coinsCount < 10 && timeToSpawnCoin)
 	    {
 	        IEnumerator coroutine = spawnCoin();
@@ -98,8 +93,6 @@ public class DungeonMaster : MonoBehaviour
     {
         int[] c = getRandomGroundPoint();
         Instantiate(spawner, new Vector3(c[0] * WALL_SIZE, c[1] * WALL_SIZE, layer), Quaternion.identity);
-
-        //Debug.Log("spawn" + spawner.ToString() + " " + spawner.name + " " + spawner.tag);
     }
 
     /// <summary>
@@ -110,6 +103,10 @@ public class DungeonMaster : MonoBehaviour
         spawn(spawner, spawner.transform.position.z);
     }
 
+    /// <summary>
+    /// coroutine ued to delay coin spawn
+    /// </summary>
+    /// <returns></returns>
     IEnumerator spawnCoin()
     {
         yield return new WaitForSeconds(COIN_SPAWN_DELAY);
@@ -118,17 +115,20 @@ public class DungeonMaster : MonoBehaviour
         timeToSpawnCoin = true;
     }
 
+    /// <summary>
+    /// called when player collides the coin
+    /// enemy spawn logic here
+    /// </summary>
     public void grabCoin()
     {
-        int score = Static.getScore();
         coinsCount--;
-        Static.increaseScore();
+        score++;
         if (score > 20)
         {
             //increase speed
         } else
         {
-            switch (Static.getScore())  //TODO spawn logic here
+            switch (score)  //TODO spawn logic here
             {
                 case 5:
                     spawn(zombie);
@@ -143,6 +143,27 @@ public class DungeonMaster : MonoBehaviour
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// called whep player collides enemy
+    /// write results to xml, tps game and propose go to main menu
+    /// </summary>
+    /// <param name="killedBy"></param>
+    public void gameOver(Type killedBy)
+    {
+        ExitStatus exitStatus = ExitStatus.KILLED_BY_ZOMBIE; // because need to be initialized
+        time.Stop();
+        if (killedBy.ToString() == "Mummy") //TODO: find how compare 'Type'
+        {
+            exitStatus = ExitStatus.KILLED_BY_MUMMY;
+            score = 0;
+        }
+        Debug.Log(killedBy);
+        Scoresheet.Node game = new Scoresheet.Node(Static.getName(), score, time.Elapsed, DateTime.Now, exitStatus);
+        Static.appendResult(game);
+        alive = false;
+        Time.timeScale = 0;
     }
 
     /// <summary>
@@ -162,6 +183,14 @@ public class DungeonMaster : MonoBehaviour
 
     void OnGUI()
     {
-        GUI.Box(new Rect(0, 0, 100, 25), "Score: " + Static.getScore());
+        GUI.Box(new Rect(0, 0, 100, 25), "Score: " + score);
+        if (!alive)
+        {
+            GUI.Box(new Rect(Screen.width / 2, Screen.height / 2 - 50, 100, 25), "Game over");
+            if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2, MainMenu.BUTTON_LENGTH, MainMenu.BUTTON_HEIGTH), "Main menu"))
+            {
+                SceneManager.LoadScene("menu");
+            }
+        }
     }
 }

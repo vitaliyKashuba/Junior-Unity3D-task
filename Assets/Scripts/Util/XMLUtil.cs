@@ -12,7 +12,7 @@ public class XMLUtil
     static Type[] extraTypes = { typeof(Scoresheet.Node) };
     static XmlSerializer formatter = new XmlSerializer(typeof(Scoresheet), extraTypes);
 
-    public static void writeData(Scoresheet scoresheet) //TODO: replace with serialization?
+    public static void writeData(Scoresheet scoresheet)
     {
         using (FileStream fs = new FileStream(FILENAME, FileMode.OpenOrCreate))
         {

@@ -39,9 +39,14 @@ public class Scoresheet
                 throw new InvalidOperationException("uncomparable objects, check types");
             }
         }
+
+        public override String ToString()
+        {
+            return name + " | " + score + " | " + time + " | " + date.ToString() + " | " + exitStatus.ToString();
+        }
     }
 
-    public ArrayList nodes;
+    public ArrayList nodes { get; }
 
     public Scoresheet()
     {
