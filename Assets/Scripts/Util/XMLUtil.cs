@@ -14,8 +14,6 @@ public class XMLUtil
 
     public static void writeData(Scoresheet scoresheet) //TODO: replace with serialization?
     {
-        //Type[] extraTypes = { typeof(Scoresheet.Node) };
-        //XmlSerializer formatter = new XmlSerializer(typeof(Scoresheet), extraTypes);
         using (FileStream fs = new FileStream(FILENAME, FileMode.OpenOrCreate))
         {
             formatter.Serialize(fs, scoresheet);
@@ -25,11 +23,16 @@ public class XMLUtil
     public static Scoresheet readData()
     {
         Scoresheet scoresheet;
-        Debug.Log("read data");
-        using (FileStream fs = new FileStream(FILENAME, FileMode.OpenOrCreate))
+        try
         {
-            scoresheet = (Scoresheet)formatter.Deserialize(fs);
-            Debug.Log(scoresheet.ToString());
+            using (FileStream fs = new FileStream(FILENAME, FileMode.OpenOrCreate))
+            {
+                scoresheet = (Scoresheet) formatter.Deserialize(fs);
+            }
+        }
+        catch (XmlException e)
+        {
+            scoresheet = new Scoresheet();
         }
         return scoresheet;
     }

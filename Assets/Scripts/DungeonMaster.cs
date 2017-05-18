@@ -30,7 +30,7 @@ public class DungeonMaster : MonoBehaviour
 	{
         time = new Stopwatch();
         time.Start();
-        Debug.Log(Static.getName());
+        //Debug.Log(Static.getName());
 		maze = SimpleMazeGenerator.getMaze ();
 		mazeSize = maze.GetUpperBound(1);
 		mazeSize++; //upperBound returns not size, but last index
@@ -99,7 +99,7 @@ public class DungeonMaster : MonoBehaviour
         int[] c = getRandomGroundPoint();
         Instantiate(spawner, new Vector3(c[0] * WALL_SIZE, c[1] * WALL_SIZE, layer), Quaternion.identity);
 
-        Debug.Log("spawn" + spawner.ToString() + " " + spawner.name + " " + spawner.tag);
+        //Debug.Log("spawn" + spawner.ToString() + " " + spawner.name + " " + spawner.tag);
     }
 
     /// <summary>

@@ -8,7 +8,7 @@ using System.Text;
 public class Scoresheet
 {
     [Serializable]
-    public class Node
+    public class Node : IComparable
     {
         public String name { get; set; } //TODO: fix getters
         public int score { get; set; }
@@ -26,6 +26,19 @@ public class Scoresheet
         }
 
         public Node() { }
+
+        public int CompareTo(object obj)
+        {
+            if (obj.GetType().Equals(this.GetType()))
+            {
+                Node n = (Node)obj;
+                return n.date.CompareTo(date);
+            }
+            else
+            {
+                throw new InvalidOperationException("uncomparable objects, check types");
+            }
+        }
     }
 
     public ArrayList nodes;
@@ -38,5 +51,6 @@ public class Scoresheet
     public void addGame(Node game)
     {
         nodes.Add(game);
+        nodes.Sort();
     }
 }
