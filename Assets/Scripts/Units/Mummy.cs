@@ -7,8 +7,7 @@ public class Mummy : Enemy
 	protected override void Start ()
 	{
 		animator = GetComponent<Animator>(); // can't be moved to base (super) constructor ?
-		speed = (basicSpeed * 2) + speedIncreaser;
-		//state = EnemyState.PURSUIT;
+		speed = (basicSpeed * 2);
 	}
 		
 }

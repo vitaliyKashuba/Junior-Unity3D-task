@@ -125,7 +125,10 @@ public class DungeonMaster : MonoBehaviour
         score++;
         if (score > 20)
         {
-            //increase speed
+            foreach (GameObject o in GameObject.FindGameObjectsWithTag("Enemy"))
+            {
+                o.SendMessage("increaseSpeed");
+            }
         } else
         {
             switch (score)  //TODO spawn logic here

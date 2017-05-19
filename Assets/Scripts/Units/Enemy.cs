@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class Enemy : Unit {
 
 	protected static float basicSpeed = 0.3f;
-	protected static float speedIncreaser = basicSpeed / 20; // 5 %
 	protected EnemyState state = EnemyState.RANDOM_WALK;
 	protected Direction direction;
     private MazePoint[,] maze = DungeonMaster.getMaze();
     private int[,] way = new int[SimpleMazeGenerator.MAZE_SIZE, SimpleMazeGenerator.MAZE_SIZE];
+    private bool found = false;
+    private int finalStep;
 
     protected virtual void Start ()
 	{
@@ -37,9 +39,154 @@ public class Enemy : Unit {
 
 		GetComponent<Rigidbody2D>().velocity = new Vector2 (moveHorizontal * speed, moveVertical * speed);
 
-	}
+	    if (Input.GetKeyDown(KeyCode.Space))
+	    {
+	        convertMap();
+	        
+	        Thread thread = new Thread(waveSearchInThread);
+	        thread.Start();
+        }
+    }
 
-	protected void doWait()
+    void convertMap()
+    {
+        way = new int[SimpleMazeGenerator.MAZE_SIZE, SimpleMazeGenerator.MAZE_SIZE];
+        for (int i = 0; i < SimpleMazeGenerator.MAZE_SIZE; i++)
+        {
+            for (int j = 0; j < SimpleMazeGenerator.MAZE_SIZE; j++)
+            {
+                switch (maze[i, j])
+                {
+                        case MazePoint.GROUND:
+                            way[i, j] = 0;
+                            break;
+                        case MazePoint.WALL:
+                            way[i, j] = -1;
+                            break;
+                }
+            }
+        }
+    }
+
+    void waveSearchInThread()
+    {
+        found = false;
+        int[] target = new int[] { 13, 13 };
+        int[] current = new int[] { 1, 1 };
+
+        way[1, 1] = -2;
+        //way[13, 13] = -3;
+
+        waveSearch(current, 1, ref way, target);
+
+        for (int i = 0; i < SimpleMazeGenerator.MAZE_SIZE; i++)
+        {
+            Debug.Log(way[i,0] + " " + way[i, 1] + " " + way[i, 2] + " " + way[i, 3] + " " + way[i, 4] + " " + way[i, 5] + " " + way[i, 6] + " " + way[i, 7] + " " + way[i, 8] + " " + way[i, 9] + " " + way[i,10] + " " + way[i, 11] + " " + way[i,12] + " " + way[i, 13] + " " + way[i, 14]);
+        }
+
+        waveSearch2(target, ref way);
+    }
+
+    void waveSearch(int[] point, int i, ref int[,] way, int[] target)
+    {
+        //Debug.Log("waveSearch" + point[0] + " " + point[1]);
+        ArrayList nearby = getNearby(point);
+        if (nearby.Count > 0 && !found)
+        {
+            foreach (int[] p in nearby)
+            {
+                if (p[0] == target[0] && p[1] == target[1])
+                {
+                    Debug.Log("!!!!!!!!!! waveSearch: found " + i);
+                    finalStep = i;
+                    found = true;
+                    return;
+                }
+                way[p[0],p[1]] = i;
+                //i++;
+                waveSearch(p, i+1, ref way, target);
+            }
+        }
+    }
+
+    ArrayList waveSearch2(int[] finish, ref int[,] way)
+    {
+        ArrayList route = new ArrayList();
+        int[] current = finish;
+        finalStep--;
+        while (finalStep > 1)
+        {
+//            Debug.Log("current" + current[0] + " " + current[1] + " " + way[current[0],current[1]]);
+//            Debug.Log("f step " + finalStep);
+//            Debug.Log(way[current[0] - 1,current[1]]);
+//            Debug.Log(way[current[0] + 1,current[1]]);
+//            Debug.Log(way[current[0],current[1] - 1]);
+//            Debug.Log(way[current[0],current[1] + 1]);
+            route.Add(current);
+            if (way[current[0] - 1,current[1]] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0] - 1, current[1] };
+                continue;
+            }
+            if (way[current[0] + 1,current[1]] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0] + 1, current[1] };
+                continue;
+            }
+            if (way[current[0],current[1] - 1] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0], current[1] - 1 };
+                continue;
+            }
+            if (way[current[0],current[1] + 1] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0], current[1] + 1 };
+                continue;
+            }
+            break;
+        }
+        foreach (int[] wp in route)
+        {
+            Debug.Log(wp[0] + " " + wp[1]);
+        }
+        return route;
+    }
+
+    ArrayList getNearby(int[] point)
+    {
+        ArrayList n = new ArrayList();
+        try
+        {
+            if (way[point[0] - 1,point[1]] == 0)     //TODO: make DRY
+            {
+                n.Add(new int[] { point[0] - 1, point[1] });
+            }
+            if (way[point[0] + 1,point[1]] == 0)
+            {
+                n.Add(new int[] { point[0] + 1, point[1] });
+            }
+            if (way[point[0],point[1] - 1] == 0)
+            {
+                n.Add(new int[] { point[0], point[1] - 1 });
+            }
+            if (way[point[0],point[1] + 1] == 0)
+            {
+                n.Add(new int[] { point[0], point[1] + 1 });
+            }
+        }
+        catch
+        {
+            //System.out.println("ex");
+        }
+        //Debug.Log("getNearby for " + point[0] + " " + point[1] + ": " + n.Count);
+        return n;
+    }
+
+    protected void doWait()
 	{
 		moveVertical = moveHorizontal = 0;
 	}
@@ -56,6 +203,11 @@ public class Enemy : Unit {
     public void startPursuit()
     {
         state = EnemyState.PURSUIT;
+    }
+
+    public void increaseSpeed()
+    {
+        speed = speed + speed / 20;
     }
 
     /// <summary>
@@ -120,6 +272,7 @@ public class Enemy : Unit {
  
 	}
 
+    /*  TODO: find out where error is
     /// <summary>
     /// see: https://habrahabr.ru/post/264189/
     /// </summary>
@@ -163,7 +316,6 @@ public class Enemy : Unit {
         nearby.Add(new int[] { point[0] + 1, point[1] });
         nearby.Add(new int[] { point[0], point[1] - 1 });
         nearby.Add(new int[] { point[0], point[1] + 1 });
-        //Debug.Log("n" + nearby.Count);
         return checkNearby(nearby);
     }
 
@@ -177,9 +329,8 @@ public class Enemy : Unit {
                 nearbyChecked.Add(point);
             }
         }
-        //Debug.Log("nc" + nearbyChecked.Count);
         return nearbyChecked;
-    }
+    }*/
 
     /// <summary>
     /// get position coordinates on map
