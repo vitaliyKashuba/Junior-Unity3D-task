@@ -15,9 +15,9 @@ public class Enemy : Unit {
     private bool routingComplete = false;
     private bool timeToPop = true;
     private int finalStep;
-    private int[] playerPosition, myPosition;
+    private int[] playerCoordinatesOnMap, myCoordinatesOnMap;
     private Stack route;
-    private float[] playerCoordinates;
+    private float[] playerPosition;
 
     protected virtual void Start ()
 	{
@@ -44,152 +44,15 @@ public class Enemy : Unit {
 		}
 
 		GetComponent<Rigidbody2D>().velocity = new Vector2 (moveHorizontal * speed, moveVertical * speed);
-
-	    if (Input.GetKeyDown(KeyCode.Space))
-	    {
-	        startPursuit();
-        }
     }
 
-    void PrepareMap()
+    void OnTriggerEnter2D(Collider2D c)
     {
-        way = new int[SimpleMazeGenerator.MAZE_SIZE, SimpleMazeGenerator.MAZE_SIZE];
-        for (int i = 0; i < SimpleMazeGenerator.MAZE_SIZE; i++)
+        if (c.gameObject.CompareTag("Player"))
         {
-            for (int j = 0; j < SimpleMazeGenerator.MAZE_SIZE; j++)
-            {
-                switch (maze[i, j])
-                {
-                        case MazePoint.GROUND:
-                            way[i, j] = 0;
-                            break;
-                        case MazePoint.WALL:
-                            way[i, j] = -1;
-                            break;
-                }
-            }
+            //animator.SetBool ("isAttack", true);
+            GameObject.Find("DungeonMaster").SendMessage("gameOver", this.GetType());
         }
-    }
-
-    void waveSearchInThread()
-    {
-        found = false;
-
-        int[] target = new int[] { playerPosition[0], playerPosition[1] };
-        int[] current = new int[] { myPosition[0], myPosition[1]};
-
-        way[1, 1] = -2;
-        //way[13, 13] = -3;
-
-        waveSearch(current, 1, ref way, target);
-
-//        for (int i = 0; i < SimpleMazeGenerator.MAZE_SIZE; i++)
-//        {
-//            Debug.Log(way[i,0] + " " + way[i, 1] + " " + way[i, 2] + " " + way[i, 3] + " " + way[i, 4] + " " + way[i, 5] + " " + way[i, 6] + " " + way[i, 7] + " " + way[i, 8] + " " + way[i, 9] + " " + way[i,10] + " " + way[i, 11] + " " + way[i,12] + " " + way[i, 13] + " " + way[i, 14]);
-//        }
-
-        route = waveSearch2(target, ref way);
-        routingComplete = true;
-    }
-
-    void waveSearch(int[] point, int i, ref int[,] way, int[] target)
-    {
-        //Debug.Log("waveSearch" + point[0] + " " + point[1]);
-        ArrayList nearby = getNearby(point);
-        if (nearby.Count > 0 && !found)
-        {
-            foreach (int[] p in nearby)
-            {
-                if (p[0] == target[0] && p[1] == target[1])
-                {
-                    Debug.Log("!!!!!!!!!! waveSearch: found " + i);
-                    finalStep = i;
-                    found = true;
-                    return;
-                }
-                way[p[0],p[1]] = i;
-                //i++;
-                waveSearch(p, i+1, ref way, target);
-            }
-        }
-    }
-
-    Stack waveSearch2(int[] finish, ref int[,] way)
-    {
-        Stack route = new Stack();
-        int[] current = finish;
-        finalStep--;
-        while (finalStep > 1)
-        {
-//            Debug.Log("current" + current[0] + " " + current[1] + " " + way[current[0],current[1]]);
-//            Debug.Log("f step " + finalStep);
-//            Debug.Log(way[current[0] - 1,current[1]]);
-//            Debug.Log(way[current[0] + 1,current[1]]);
-//            Debug.Log(way[current[0],current[1] - 1]);
-//            Debug.Log(way[current[0],current[1] + 1]);
-            route.Push(current);
-            if (way[current[0] - 1,current[1]] == finalStep)
-            {
-                finalStep--;
-                current = new int[] { current[0] - 1, current[1] };
-                continue;
-            }
-            if (way[current[0] + 1,current[1]] == finalStep)
-            {
-                finalStep--;
-                current = new int[] { current[0] + 1, current[1] };
-                continue;
-            }
-            if (way[current[0],current[1] - 1] == finalStep)
-            {
-                finalStep--;
-                current = new int[] { current[0], current[1] - 1 };
-                continue;
-            }
-            if (way[current[0],current[1] + 1] == finalStep)
-            {
-                finalStep--;
-                current = new int[] { current[0], current[1] + 1 };
-                continue;
-            }
-            break;
-        }
-//        foreach (int[] wp in route)
-//        {
-//            Debug.Log(wp[0] + " " + wp[1]);
-//        }
-        Debug.Log("ws2: stack length " + route.Count);
-        return route;
-    }
-
-    ArrayList getNearby(int[] point)
-    {
-        ArrayList n = new ArrayList();
-        try
-        {
-            if (way[point[0] - 1,point[1]] == 0)     //TODO: make DRY
-            {
-                n.Add(new int[] { point[0] - 1, point[1] });
-            }
-            if (way[point[0] + 1,point[1]] == 0)
-            {
-                n.Add(new int[] { point[0] + 1, point[1] });
-            }
-            if (way[point[0],point[1] - 1] == 0)
-            {
-                n.Add(new int[] { point[0], point[1] - 1 });
-            }
-            if (way[point[0],point[1] + 1] == 0)
-            {
-                n.Add(new int[] { point[0], point[1] + 1 });
-            }
-        }
-        catch
-        {
-            //System.out.println("ex");
-        }
-        //Debug.Log("getNearby for " + point[0] + " " + point[1] + ": " + n.Count);
-        return n;
     }
 
     protected void doWait()
@@ -206,11 +69,16 @@ public class Enemy : Unit {
 	
 	}
 
+    /// <summary>
+    /// calls from DungeonMaster if player collects 20 coins
+    /// </summary>
     public void startPursuit()
     {
         state = EnemyState.PURSUIT;
     }
-
+    /// <summary>
+    /// calls from DungeonMaster after every next after 20 coins
+    /// </summary>
     public void increaseSpeed()
     {
         speed = speed + speed / 20;
@@ -246,22 +114,41 @@ public class Enemy : Unit {
 
     }
 
+    /// <summary>
+    /// contains two pursuit methods, need to uncomment one
+    /// </summary>
     protected void pursuit()
     {
-        playerCoordinates =  getCoordinates(getPosition(GameObject.FindGameObjectWithTag("Player").transform.position));
+        playerCoordinatesOnMap = getCoordinatesOnMap(GameObject.FindGameObjectWithTag("Player").transform.position);
+        playerPosition =  getPosition(playerCoordinatesOnMap);
+
         //advancedPursuit();
+                                //need to choode and uncomment one
         simplePursuit();
     }
 
-	protected void advancedPursuit() 
+    /// <summary>
+    /// just move to player. ignoring walls
+    /// </summary>
+    protected void simplePursuit()
+    {
+        moveToPlayer(playerPosition);
+    }
+
+    /// <summary>
+    /// try to find optimal way. sometimes sucessful, but more often no
+    /// units stuck in walls or went through whole maze
+    /// have no time for improving, but suppose i'm close
+    /// </summary>
+    protected void advancedPursuit() 
 	{
         if (timeToMakeWaveSearch)
 	    {
-	        // TODO: add coroutine
+	        // TODO: add coroutine for route rebuilding restart once per 1-2 seconds
 	        timeToMakeWaveSearch = false;
 
 	        PrepareMap();
-	        myPosition = getPosition(this.transform.position);
+	        myCoordinatesOnMap = getCoordinatesOnMap(this.transform.position);
             Thread thread = new Thread(waveSearchInThread);
 	        thread.Start();
         }
@@ -273,22 +160,17 @@ public class Enemy : Unit {
 	    {
 	        if (route.Count==0)
 	        {
-                Debug.Log("new search");
+                //Debug.Log("new search");
 	            timeToMakeWaveSearch = true;
 	            routingComplete = false;
 	            return;
 	        }
 	        timeToPop = false;
-	        playerCoordinates = getCoordinates((int[])route.Pop());
-            Debug.Log("Pop");
+	        playerPosition = getPosition((int[])route.Pop());
+            //Debug.Log("Pop");
         }
 	    
-        moveToPlayer(playerCoordinates);
-    }
-
-    protected void simplePursuit()
-    {
-        moveToPlayer(playerCoordinates);
+        moveToPlayer(playerPosition);
     }
 
     void moveToPlayer(float[] playerCoordinates)
@@ -325,33 +207,162 @@ public class Enemy : Unit {
         }
     }
 
-    void moveTo(int[] position)
+    /// <summary>
+    /// convert enum map into numeric. erase previous search
+    /// </summary>
+    void PrepareMap()
     {
-        float[] targetCoordinates = getCoordinates(position);
+        way = new int[SimpleMazeGenerator.MAZE_SIZE, SimpleMazeGenerator.MAZE_SIZE];
+        for (int i = 0; i < SimpleMazeGenerator.MAZE_SIZE; i++)
+        {
+            for (int j = 0; j < SimpleMazeGenerator.MAZE_SIZE; j++)
+            {
+                switch (maze[i, j])
+                {
+                    case MazePoint.GROUND:
+                        way[i, j] = 0;
+                        break;
+                    case MazePoint.WALL:
+                        way[i, j] = -1;
+                        break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// runs wave searxh in thread. because sometimes takes lot of time
+    /// </summary>
+    void waveSearchInThread()
+    {
+        found = false;
+
+        int[] target = new int[] { playerCoordinatesOnMap[0], playerCoordinatesOnMap[1] };
+        int[] current = new int[] { myCoordinatesOnMap[0], myCoordinatesOnMap[1] };
+
+        way[1, 1] = -2;
+
+        waveSearch(current, 1, ref way, target);
+        route = waveSearch2(target, ref way);
+        routingComplete = true;
+    }
+
+    /// <summary>
+    /// first step of wave search
+    /// see https://habrahabr.ru/post/264189/
+    /// </summary>
+    void waveSearch(int[] point, int i, ref int[,] way, int[] target)
+    {
+        Debug.Log("waveSearch" + point[0] + " " + point[1]);
+        ArrayList nearby = getNearby(point);
+        if (nearby.Count > 0 && !found)
+        {
+            foreach (int[] p in nearby)
+            {
+                if (p[0] == target[0] && p[1] == target[1])
+                {
+                    Debug.Log("!!!!!!!!!! waveSearch: found " + i);
+                    finalStep = i;
+                    found = true;
+                    return;
+                }
+                way[p[0], p[1]] = i;
+                //i++;
+                waveSearch(p, i + 1, ref way, target);
+            }
+        }
+    }
+
+    /// <summary>
+    /// second step of wave search. finds way back and put it to stack
+    /// </summary>
+    /// <param name="finish"></param>
+    /// <param name="way"></param>
+    /// <returns></returns>
+    Stack waveSearch2(int[] finish, ref int[,] way)
+    {
+        Stack route = new Stack();
+        int[] current = finish;
+        finalStep--;
+        while (finalStep > 1)
+        {
+            route.Push(current);
+            if (way[current[0] - 1, current[1]] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0] - 1, current[1] };
+                continue;
+            }
+            if (way[current[0] + 1, current[1]] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0] + 1, current[1] };
+                continue;
+            }
+            if (way[current[0], current[1] - 1] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0], current[1] - 1 };
+                continue;
+            }
+            if (way[current[0], current[1] + 1] == finalStep)
+            {
+                finalStep--;
+                current = new int[] { current[0], current[1] + 1 };
+                continue;
+            }
+            break;
+        }
+
+        return route;
+    }
+
+    /// <summary>
+    /// get available nearby points
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
+    ArrayList getNearby(int[] point)
+    {
+        ArrayList n = new ArrayList();
+
+        if (way[point[0] - 1, point[1]] == 0)     //TODO: make DRY
+        {
+            n.Add(new int[] { point[0] - 1, point[1] });
+        }
+        if (way[point[0] + 1, point[1]] == 0)
+        {
+            n.Add(new int[] { point[0] + 1, point[1] });
+        }
+        if (way[point[0], point[1] - 1] == 0)
+        {
+            n.Add(new int[] { point[0], point[1] - 1 });
+        }
+        if (way[point[0], point[1] + 1] == 0)
+        {
+            n.Add(new int[] { point[0], point[1] + 1 });
+        }
+        return n;
     }
 
     /// <summary>
     /// get position coordinates on map
     /// </summary>
     /// <returns></returns>
-    int[] getPosition(Vector3 position)
+    int[] getCoordinatesOnMap(Vector3 position)
     {
         return new int[]{ (int)(position.x / DungeonMaster.WALL_SIZE), (int)(position.y / DungeonMaster.WALL_SIZE) };
     }
 
-    float[] getCoordinates(int[] position)
+    /// <summary>
+    /// convert coordinates into position
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    float[] getPosition(int[] position)
     {
         return new float[]{position[0]* DungeonMaster.WALL_SIZE , position[1] * DungeonMaster.WALL_SIZE };
     }
-
-	void OnTriggerEnter2D(Collider2D c) 
-	{
-		if (c.gameObject.CompareTag ("Player")) 
-		{
-            //animator.SetBool ("isAttack", true);
-		    GameObject.Find("DungeonMaster").SendMessage("gameOver", this.GetType());
-        }
-	}
 
 //	void OnTriggerExit2D(Collider2D c)
 //	{

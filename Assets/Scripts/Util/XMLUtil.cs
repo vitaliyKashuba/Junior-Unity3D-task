@@ -9,8 +9,8 @@ using UnityEngine;
 public class XMLUtil
 {
     private const String FILENAME = "Highscores.xml";
-    static Type[] extraTypes = { typeof(Scoresheet.Node) };
-    static XmlSerializer formatter = new XmlSerializer(typeof(Scoresheet), extraTypes);
+    private static Type[] extraTypes = { typeof(Scoresheet.Node) };
+    private static XmlSerializer formatter = new XmlSerializer(typeof(Scoresheet), extraTypes);
 
     public static void writeData(Scoresheet scoresheet)
     {

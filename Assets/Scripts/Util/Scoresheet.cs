@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
+/// <summary>
+/// class used to write highscores into xml 
+/// </summary>
 [Serializable]
 public class Scoresheet
 {
@@ -27,6 +27,9 @@ public class Scoresheet
 
         public Node() { }
 
+        /// <summary>
+        /// used to sort highscores by date
+        /// </summary>
         public int CompareTo(object obj)
         {
             if (obj.GetType().Equals(this.GetType()))

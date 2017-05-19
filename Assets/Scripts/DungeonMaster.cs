@@ -21,12 +21,15 @@ public class DungeonMaster : MonoBehaviour
 
     private bool timeToSpawnCoin = true, alive = true;
     private static int coinsCount = 0, score = 0;
-    int mazeSize;
+    private int mazeSize;
 	public const float WALL_SIZE = 0.9f;
-    private const int COIN_SPAWN_DELAY = 1; //TODO 5
+    private const int COIN_SPAWN_DELAY = 5;
 	static MazePoint[,] maze;
     private Stopwatch time;
 
+    /// <summary>
+    /// because they keeps if scene loaded second time
+    /// </summary>
     void resetVariables()
     {
         coinsCount = 0;
@@ -73,7 +76,7 @@ public class DungeonMaster : MonoBehaviour
                 ExitStatus.ESCAPED);
             Static.appendResult(game);
            
-            Application.Quit();
+            SceneManager.LoadScene("menu");
 	    }
 
 	    if (coinsCount < 10 && timeToSpawnCoin)
@@ -131,7 +134,7 @@ public class DungeonMaster : MonoBehaviour
             }
         } else
         {
-            switch (score)  //TODO spawn logic here
+            switch (score) 
             {
                 case 5:
                     spawn(zombie);
@@ -145,15 +148,13 @@ public class DungeonMaster : MonoBehaviour
                         o.SendMessage("startPursuit");
                     }
                     break;
-                default:
-                    break;
             }
         }
     }
 
     /// <summary>
-    /// called whep player collides enemy
-    /// write results to xml, tps game and propose go to main menu
+    /// called when player collides enemy
+    /// write results to xml, stops game and propose go to main menu
     /// </summary>
     /// <param name="killedBy"></param>
     public void gameOver(Type killedBy)

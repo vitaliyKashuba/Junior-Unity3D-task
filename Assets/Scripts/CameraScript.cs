@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
-
 	private float dampTime = 0.15f;
 	public Transform target;
 	private Vector3 velocity = Vector3.zero;
